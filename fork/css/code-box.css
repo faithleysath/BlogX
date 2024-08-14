@@ -1,0 +1,48 @@
+.code-box {
+    position: relative;
+    display: flex;
+    background-color: #1E1E1E;
+    border-radius: 8px;
+    padding: 20px;
+    overflow: auto;
+    max-height: 60vh;
+}
+.code-box pre {
+    margin: unset;
+    max-height: unset;
+    overflow: unset;
+}
+.code-box pre code {
+    padding: unset;
+}
+.number-line {
+    margin: unset;
+    list-style: none;
+    border-right: 2px dashed #ccc;
+    color: #ccc;
+    margin-right: 1em;
+    padding: 0 10px;
+    max-height: unset;
+    height: fit-content;
+    overflow: unset;
+    text-align: right;
+}
+
+.copy-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.3s, transform 0.3s; /* 添加 transform 过渡 */
+}
+.copy-button:hover {
+    opacity: 1;
+    transform: scale(1.1); /* 鼠标悬停时放大 */
+}
+.copy-button i {
+font-size: 1.5rem;
+color: white;
+}
