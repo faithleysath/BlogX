@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // 遍历所有图片，设置referrerpolicy="no-referrer"
+    for (const img of document.getElementsByTagName('img')) {
+        img.referrerPolicy = 'no-referrer';
+    }
     // 将站外链接在新标签页打开，通过修改 target 属性
     for (const a of document.getElementsByTagName('a')) {
         if (a.href.startsWith('http') && !a.href.startsWith(location.origin)) {

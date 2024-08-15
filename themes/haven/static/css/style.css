@@ -9,6 +9,7 @@ body {
 pre, code {
     font-family: "Roboto Mono", "ZCOOL XiaoWei", monospace;
     font-optical-sizing: auto;
+    color: #ddd;
 }
 
 /* 设置主体居中 */
@@ -17,7 +18,6 @@ main {
     margin: 0 auto;   /* 设置上下外边距为0，左右外边距自动 */
     padding: 20px;    /* 添加内边距 */
     display: flex;    /* 设置弹性布局 */
-    overflow-x: hidden;
 }
 
 /* 文章部分 */
@@ -48,6 +48,9 @@ table:not(.codehilitetable) td
 {
     color: #c0392b;
     padding: 9px 8px 0px 8px;
+    word-wrap: break-word; /* 允许单词换行 */
+    word-break: break-all; /* 在单词内断开 */
+
 }
 table:not(.codehilitetable) tbody tr:hover td
 {
@@ -92,8 +95,8 @@ table:not(.codehilitetable) tbody tr:hover td
 .sidebar ul li a:hover {
     text-decoration: underline; /* 悬停时下划线 */
 }
-/* 媒体查询：当屏幕宽度小于 980px 时隐藏 aside */
-@media (max-width: 980px) {
+/* 媒体查询：当屏幕宽度小于 1000px 时隐藏 aside */
+@media (max-width: 1000px) {
     main {
         flex-direction: column; /* 设置弹性布局为垂直方向 */
     }
@@ -125,6 +128,13 @@ a[href^="http"]:after {
     border-radius: 8px;
     margin: 1em 0;
     position: relative;
+    overflow-x: hidden;
+}
+
+.code {
+    max-width: 710px;
+    overflow-x: scroll;
+    scrollbar-width: none;
 }
 
 code:not(td.code code) {
@@ -132,7 +142,9 @@ code:not(td.code code) {
     color: #666;
     border: 1px solid #ddd;
     border-radius: 3px;
-    padding: 0 4px;
+    margin: 0 4px;
+    padding: 0 1px;
+    font-size: 0.9em;
 }
 
 h1 {
@@ -144,7 +156,7 @@ h1 {
     background-color: transparent;
     border: none;
     cursor: pointer;
-    opacity: 0.5;
+    opacity: 0.3;
     transition: opacity 0.3s, transform 0.3s; /* 添加 transform 过渡 */
 }
 
@@ -161,4 +173,40 @@ h1 {
 .copyicon i {
     font-size: 1.5rem;
     color: white;
+}
+
+blockquote {
+    background-color: #f9f9f9;
+    border-left: 5px solid #c0392b;
+    margin: 1em 0;
+    padding: 0.5em 1em;
+}
+
+article blockquote,
+article .note {
+    margin: 0 0 18px;
+    padding: 1px 20px;
+    background: #fff7d6;
+}
+
+img {
+    display: block;
+    margin: 1em auto;
+    /* 将大图片缩放50% */
+    width: 50%;
+    height: auto; /* 保持图片的宽高比 */
+    /* 添加阴影和边框 */
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+    /* 添加圆角 */
+    border-radius: 8px;
+    /* 添加过渡效果 */
+    transition: box-shadow 0.3s, transform 0.3s;
+    /* 设置鼠标悬停时的效果 */
+    cursor: pointer;
+}
+
+img:hover {
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
 }
