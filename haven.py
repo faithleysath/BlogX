@@ -20,6 +20,8 @@ def md2html(md_content):
         'tables', 
         KatexExtension(insert_fonts_css=False), 
         CodeHiliteExtension(linenos=True)])
+    # 将所有img标签加上referrerpolicy="no-referrer"属性
+    html_content = re.sub(r'<img', r'<img referrerpolicy="no-referrer"', html_content)
     return html_content
 
 def render(md_content):
