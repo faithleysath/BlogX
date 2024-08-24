@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]  # 构建系统所需的依赖
+build-backend = "setuptools.build_meta"  # 使用 setuptools 作为构建后端
+
+[project]  # 项目的元数据
+name = "BlogX"  # 包名称
+version = "0.1.1"  # 版本号
+description = "a simple and pure blog generator based on html + css + python"  # 简要描述
+readme = "README.md"  # 详细描述文件
+authors = [
+    { name = "laysath", email = "faithleysath@gmail.com" }  # 作者信息
+]
+license = { text = "MIT" }  # 许可证类型
+dependencies = [
+    "typer"  # 运行时依赖项
+]
+requires-python = ">=3.6"  # Python 版本要求
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]  # 项目相关网址
+Homepage = "https://github.com/faithleysath/BlogX"  # 主页 URL
+Documentation = "https://readthedocs.org"  # 文档 URL
+Repository = "https://github.com/faithleysath/BlogX"  # 代码仓库 URL
+"Issues" = "https://github.com/faithleysath/BlogX/issues"  # 问题追踪 URL
+
+[project.scripts]  # 控制台脚本入口点
+blogx = "BlogX.CLI:app"  # 脚本的入口函数
