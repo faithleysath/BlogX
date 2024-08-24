@@ -1,0 +1,212 @@
+/* 设置全局字体 */
+body {
+    font-family: "LXGW WenKai TC", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* 设置代码块字体 */
+pre, code {
+    font-family: "Roboto Mono", "ZCOOL XiaoWei", monospace;
+    font-optical-sizing: auto;
+    color: #ddd;
+}
+
+/* 设置主体居中 */
+main {
+    max-width: 1000px; /* 设置最大宽度 */
+    margin: 0 auto;   /* 设置上下外边距为0，左右外边距自动 */
+    padding: 20px;    /* 添加内边距 */
+    display: flex;    /* 设置弹性布局 */
+}
+
+/* 文章部分 */
+article {
+    flex: 1;         /* 设置弹性元素的伸缩比例 */
+    max-width: 780px; /* 设置最大宽度 */
+}
+
+table:not(.codehilitetable)
+{
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 12px;
+    background: #fff;
+    margin: 1em auto;
+    min-width: 50%;
+    border-collapse: collapse;
+    text-align: left;
+}
+table:not(.codehilitetable) th
+{
+    font-size: 14px;
+    font-weight: normal;
+    color: #c0392b;
+    padding: 10px 8px;
+    border-bottom: 2px solid #c0392b;
+}
+table:not(.codehilitetable) td
+{
+    color: #c0392b;
+    padding: 9px 8px 0px 8px;
+    word-wrap: break-word; /* 允许单词换行 */
+    word-break: break-all; /* 在单词内断开 */
+
+}
+table:not(.codehilitetable) tbody tr:hover td
+{
+    color: #c0392b;
+}
+
+/* 侧边栏部分 */
+.sidebar {
+    width: 220px;    /* 设置宽度 */
+    margin-left: 2em; /* 设置左外边距 */
+    background-color: #fff; /* 设置背景颜色 */
+    border: 1px dashed #e0e0e0; /* 设置边框 */
+    padding: 20px;  /* 设置内边距 */
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* 设置阴影 */
+    overflow: hidden; /* 设置溢出隐藏 */
+}
+
+.sidebar h2 {
+    color: #c0392b; /* 红色 */
+    font-size: 18px;
+    border-bottom: 2px solid #c0392b; /* 底部红线 */
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 8px 0;
+    color: #c0392b; /* 红色 */
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #c0392b; /* 红色 */
+    font-size: 16px;
+}
+
+.sidebar ul li a:hover {
+    text-decoration: underline; /* 悬停时下划线 */
+}
+/* 媒体查询：当屏幕宽度小于 1000px 时隐藏 aside */
+@media (max-width: 1000px) {
+    main {
+        flex-direction: column; /* 设置弹性布局为垂直方向 */
+    }
+
+    .sidebar {
+        width: 100%; /* 设置宽度为 100% */
+        margin-left: 0; /* 移除左外边距 */
+        margin-top: 20px; /* 设置上外边距 */
+        padding: 0;
+        border: none; /* 移除边框 */
+        box-shadow: none; /* 移除阴影 */
+    }
+    article {
+        margin: 0;    /* 移除 article 的外边距 */
+    }
+}
+/* 设置链接的伪类 */
+a[href^="http"]:after {
+    content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l82.7 0L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3l0 82.7c0 17.7 14.3 32 32 32s32-14.3 32-32l0-160c0-17.7-14.3-32-32-32L320 0zM80 32C35.8 32 0 67.8 0 112L0 432c0 44.2 35.8 80 80 80l320 0c44.2 0 80-35.8 80-80l0-112c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 112c0 8.8-7.2 16-16 16L80 448c-8.8 0-16-7.2-16-16l0-320c0-8.8 7.2-16 16-16l112 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L80 32z"/></svg>');
+    vertical-align: baseline;
+    margin-left: 2px;
+    width: 10px;
+    display: inline-block;
+    opacity: 0.5;
+}
+
+.codehilite {
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    margin: 1em 0;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.code {
+    max-width: 710px;
+    overflow-x: scroll;
+    scrollbar-width: none;
+}
+
+code:not(td.code code) {
+    background: #fafafa;
+    color: #666;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin: 0 4px;
+    padding: 0 1px;
+    font-size: 0.9em;
+}
+
+h1 {
+    text-align: center;
+}
+
+.copyicon {
+    position: absolute; top: .7em; right: .7em;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    opacity: 0.3;
+    transition: opacity 0.3s, transform 0.3s; /* 添加 transform 过渡 */
+}
+
+.copyicon:hover {
+    opacity: 1;
+    transform: scale(1.1); /* 鼠标悬停时放大 */
+}
+
+.copyicon.hover-effect {
+    opacity: 1;
+    transform: scale(1.1); /* 放大效果 */
+}
+
+.copyicon i {
+    font-size: 1.5rem;
+    color: white;
+}
+
+blockquote {
+    background-color: #f9f9f9;
+    border-left: 5px solid #c0392b;
+    margin: 1em 0;
+    padding: 0.5em 1em;
+}
+
+article blockquote,
+article .note {
+    margin: 0 0 18px;
+    padding: 1px 20px;
+    background: #fff7d6;
+}
+
+img {
+    display: block;
+    margin: 1em auto;
+    /* 将大图片缩放50% */
+    width: 50%;
+    height: auto; /* 保持图片的宽高比 */
+    /* 添加阴影和边框 */
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+    /* 添加圆角 */
+    border-radius: 8px;
+    /* 添加过渡效果 */
+    transition: box-shadow 0.3s, transform 0.3s;
+    /* 设置鼠标悬停时的效果 */
+    cursor: pointer;
+}
+
+img:hover {
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
