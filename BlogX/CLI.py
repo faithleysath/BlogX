@@ -5,6 +5,7 @@ from pathlib import Path
 from .config import root_path, themes_path, themes
 from rich import print
 from .common.dev_server import dev_server
+from .common.build import build as build_site
 
 current_path = Path.cwd()
 
@@ -54,6 +55,12 @@ def init(
         ])
     print(f"Project [bold red]{project_name}[/bold red] initialized with theme [bold green]{theme}[/bold green]")
     print(f"Run [bold blue]cd {project_name}[/bold blue] to enter the project directory")
+
+@app.command()
+def build():
+    """Build the site"""
+    is_valid_project()
+    build_site()
 
 @app.command()
 def serve():
