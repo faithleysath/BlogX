@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"  # 使用 setuptools 作为构建后端
 
 [project]  # 项目的元数据
 name = "BlogX"  # 包名称
-version = "0.1.4"  # 版本号
+version = "0.1.5"  # 版本号
 description = "a simple and pure blog generator based on html + css + python"  # 简要描述
 readme = "README.md"  # 详细描述文件
 authors = [

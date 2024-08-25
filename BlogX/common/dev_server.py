@@ -31,5 +31,7 @@ def dev_server():
     server = Server()
     # watch the src directory and rebuild the site when a file is modified
     server.watch(current_path / "src", on_modified)
+    # watch the theme directory and rebuild the site when a file is modified
+    server.watch(theme_path, on_modified)
     # start the server
     server.serve(root=output_dir)
