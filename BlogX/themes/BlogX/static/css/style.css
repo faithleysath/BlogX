@@ -15,8 +15,17 @@ pre, code {
     font-family: "Roboto Mono", "ZCOOL XiaoWei", monospace;
     font-optical-sizing: auto;
     color: #ddd;
+    word-break: break-all;
 }
-
+/* 设置垂直流 */
+html, body {
+    height: 100%;
+}
+#container {
+    min-height: 100%;
+    display: flex; /* 容器为flex布局 */
+    flex-direction: column; /* 方向为纵向，保持正常的从上到下文档流 */
+}
 /* 设置主体居中 */
 main {
     max-width: 1000px; /* 设置最大宽度 */
@@ -31,13 +40,10 @@ header, footer {
 
 footer {
     /* 设置字体为微软雅黑 */
+    width: 100%;
     font-family: "Microsoft YaHei", sans-serif;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    margin-top: auto; /* 设置footer的上外边距为auto */
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1) inset;
-    margin-top: 40px;
     padding:10px 0;
     font-size: smaller;
     color: #aaa;
@@ -123,7 +129,7 @@ table:not(.codehilitetable) tbody tr:hover td
     text-decoration: underline; /* 悬停时下划线 */
 }
 /* 媒体查询：当屏幕宽度小于 1000px 时隐藏 aside */
-@media (max-width: 1000px) {
+@media (max-width: 1062px) {
     main {
         flex-direction: column; /* 设置弹性布局为垂直方向 */
     }

@@ -36,20 +36,22 @@
 </head>
 
 <body>
-    <header>
-        {{ header_content|safe }}
-    </header>
-    <main>
-        <article>
-            {{ article_content|safe }}
-        </article>
-        <aside class="sidebar">
-            {{ sidebar_content|safe }}
-        </aside>
-    </main>
-    <footer>
-        {{ footer_content|safe }}
-    </footer>
+    <div id="container">
+        <header>
+            {{ header_content|safe }}
+        </header>
+        <main>
+            <article>
+                {{ article_content|safe }}
+            </article>
+            <aside class="sidebar">
+                {{ sidebar_content|safe }}
+            </aside>
+        </main>
+        <footer>
+            {{ footer_content|safe }}
+        </footer>
+    </div>
     <script> // 图片点击放大（fancybox）
         $(document).ready(function () {
             // Event delegation to handle click on dynamically loaded images
