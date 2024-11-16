@@ -136,3 +136,6 @@ blogx deploy
 
 ## 许可证
 BlogX 是开源的，并在 MIT 许可证 下可用。您可以自由使用、修改和分发 BlogX。
+
+## 截图
+![BlogX](example.png)
