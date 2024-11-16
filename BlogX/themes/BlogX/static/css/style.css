@@ -28,6 +28,7 @@ html, body {
 }
 /* 设置主体居中 */
 main {
+    width: 93%;
     max-width: 1000px; /* 设置最大宽度 */
     margin: 0 auto;   /* 设置上下外边距为0，左右外边距自动 */
     padding: 20px;    /* 添加内边距 */
