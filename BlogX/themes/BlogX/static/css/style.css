@@ -24,6 +24,28 @@ main {
     padding: 20px;    /* 添加内边距 */
     display: flex;    /* 设置弹性布局 */
 }
+header, footer {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+footer {
+    /* 设置字体为微软雅黑 */
+    font-family: "Microsoft YaHei", sans-serif;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1) inset;
+    margin-top: 40px;
+    padding:10px 0;
+    font-size: smaller;
+    color: #aaa;
+}
+
+footer p {
+    margin: 0;
+}
 
 /* 文章部分 */
 article {

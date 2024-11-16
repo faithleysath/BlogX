@@ -4,7 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>我的博客</title>
+    <title>{{ title }}</title>
+    <!-- icon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    
     <!-- 导入字体 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,6 +36,9 @@
 </head>
 
 <body>
+    <header>
+        {{ header_content|safe }}
+    </header>
     <main>
         <article>
             {{ article_content|safe }}
@@ -41,6 +47,9 @@
             {{ sidebar_content|safe }}
         </aside>
     </main>
+    <footer>
+        {{ footer_content|safe }}
+    </footer>
     <script> // 图片点击放大（fancybox）
         $(document).ready(function () {
             // Event delegation to handle click on dynamically loaded images
