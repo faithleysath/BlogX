@@ -60,19 +60,8 @@ blogx init
     │
     └─static
         ├─css
-        │      jquery.fancybox.min.css
-        │      pygments.css
-        │      style.css
-        │      toastr.min.css
         │
         └─js
-                clipboard.min.js
-                copy-tex.min.js
-                jquery.fancybox.min.js
-                jquery.min.js
-                main.js
-                toastr.js.map
-                toastr.min.js
 ```
 
 其中`src`目录存放博客源文件，`theme`目录存放主题文件。`_global`目录存放全局文件，该目录不会被转换为HTML文件并复制到输出目录。
@@ -99,19 +88,8 @@ C:.
 │
 └─static
     ├─css
-    │      jquery.fancybox.min.css
-    │      pygments.css
-    │      style.css
-    │      toastr.min.css
     │
     └─js
-            clipboard.min.js
-            copy-tex.min.js
-            jquery.fancybox.min.js
-            jquery.min.js
-            main.js
-            toastr.js.map
-            toastr.min.js
 ```
 
 6. 实时预览博客
