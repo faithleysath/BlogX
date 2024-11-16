@@ -1,4 +1,4 @@
-VERSION = "0.2.2"
+VERSION = "0.2.4"
 from typer import Typer, Option, Argument, Exit
 from os import mkdir, system
 from shutil import copytree
@@ -107,7 +107,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install blogx={{VERSION}}  # 安装 blogx
+          pip install blogx=={{VERSION}}  # 安装 blogx
 
       - name: Build the blog
         run: |
@@ -125,6 +125,9 @@ jobs:
 def deploy():
     """Deploy the site to GitHub Pages"""
     is_valid_project()
+    # 创建父目录
+    if not (current_path / ".github/workflows").exists():
+        (current_path / ".github/workflows").mkdir(parents=True, exist_ok=True)
     with open(current_path / ".github/workflows/deploy.yml", "w", encoding='utf-8') as f:
         f.write(action_str)
     print("Deploy action created. [bold red]DO YOU WANT TO PUSH TO GITHUB?[/bold red]")
