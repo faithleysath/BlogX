@@ -54,10 +54,28 @@ footer p {
     margin: 0;
 }
 
+footer a {
+    /* 清空样式 */
+    text-decoration: none;
+    color: #aaa;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
 /* 文章部分 */
 article {
     flex: 1;         /* 设置弹性元素的伸缩比例 */
     max-width: 780px; /* 设置最大宽度 */
+}
+
+article a {
+    color: #c0392b; /* 设置链接颜色 */
+}
+
+article a:hover {
+    color: #dd5353;
 }
 
 table:not(.codehilitetable)
