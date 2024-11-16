@@ -46,8 +46,22 @@ blogx init
 3. 查看目录结构
 
 ```
+C:.
 ├─src
 │  │  index.md
+│  │
+│  ├─haha
+│  │  │  index.md
+│  │  │
+│  │  └─nok
+│  │          dule.md
+│  │
+│  ├─some-article
+│  │      hello.md
+│  │
+│  ├─static
+│  │  └─img
+│  │          1.bmp
 │  │
 │  └─_global
 │          BLOGNAME
@@ -60,7 +74,6 @@ blogx init
     │
     └─static
         ├─css
-        │
         └─js
 ```
 
@@ -86,9 +99,19 @@ C:.
 │  index.html
 │  template.html
 │
+├─haha
+│  │  index.html
+│  │
+│  └─nok
+│          dule.html
+│
+├─some-article
+│      hello.html
+│
 └─static
     ├─css
-    │
+    ├─img
+    │      1.bmp
     └─js
 ```
 
