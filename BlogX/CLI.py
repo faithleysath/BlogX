@@ -3,8 +3,8 @@ from os import mkdir
 from shutil import copytree
 from pathlib import Path
 from rich import print
-from config import themes, themes_path
-from common import build_site, dev_server
+from .config import themes, themes_path
+from .common import build_site, dev_server
 
 current_path = Path.cwd()
 
