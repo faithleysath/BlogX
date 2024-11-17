@@ -1,4 +1,4 @@
-VERSION = "0.2.7"
+VERSION = "0.2.8"
 from typer import Typer, Option, Argument, Exit
 from os import mkdir, system
 from shutil import copytree
@@ -73,7 +73,7 @@ def serve():
     is_valid_project()
     dev_server(current_path / "src", current_path / "dist", current_path / "theme")
 
-action_str = """
+deploy_action_str = """
 name: Deploy to GitHub Pages
 
 on:
@@ -121,6 +121,42 @@ jobs:
           publish_dir: ./dist  # 指向生成的静态文件目录
 """.replace("{{VERSION}}", VERSION)
 
+upload_action_str = """
+name: Upload to local server
+
+on:
+  workflow_run:
+    workflows: ["Deploy to GitHub Pages"]  # 监听 deploy.yml
+    types:
+      - completed  # 仅在工作流完成时触发
+
+jobs:
+    upload:
+        runs-on: ubuntu-22.04  # 设置运行环境
+        permissions:
+            contents: write  # 允许写入内容
+        concurrency:
+            group: ${{ github.workflow }}-${{ github.ref }}  # 避免并发运行
+
+        if: ${{ github.event.workflow_run.conclusion == 'success' && vars.UPLOAD_ENABLED == 'true' }}  # 添加条件
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                ref: gh-pages
+
+            - name: Install rsync and sshpass
+              run: sudo apt-get install rsync sshpass -y
+
+            - name: show current directory
+              run: pwd && ls -al
+
+            - name: Upload files
+              run: |
+                rsync -avz --delete -e "sshpass -p '${{ secrets.SERVER_SSH_PASSWORD }}' ssh -o StrictHostKeyChecking=no" ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_WWWROOT_DIR }}
+"""
+
 @app.command()
 def deploy():
     """Deploy the site to GitHub Pages"""
@@ -129,7 +165,9 @@ def deploy():
     if not (current_path / ".github/workflows").exists():
         (current_path / ".github/workflows").mkdir(parents=True, exist_ok=True)
     with open(current_path / ".github/workflows/deploy.yml", "w", encoding='utf-8') as f:
-        f.write(action_str)
+        f.write(deploy_action_str)
+    with open(current_path / ".github/workflows/upload.yml", "w", encoding='utf-8') as f:
+        f.write(upload_action_str)
     print("Deploy action created. [bold red]DO YOU WANT TO PUSH TO GITHUB?[/bold red]")
     push = input("Push to GitHub? [y/n]: ")
     if push.lower() == "y":
