@@ -111,7 +111,7 @@ table:not(.codehilitetable) tbody tr:hover td
 
 /* 侧边栏部分 */
 .sidebar {
-    width: 220px;    /* 设置宽度 */
+    width: 280px;    /* 设置宽度 */
     margin-left: 2em; /* 设置左外边距 */
     background-color: #fff; /* 设置背景颜色 */
     border: 1px dashed #e0e0e0; /* 设置边框 */
