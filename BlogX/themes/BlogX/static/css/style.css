@@ -244,8 +244,7 @@ article .note {
 img {
     display: block;
     margin: 1em auto;
-    /* 将大图片缩放50% */
-    width: 50%;
+    width: 100%;
     height: auto; /* 保持图片的宽高比 */
     /* 添加阴影和边框 */
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
@@ -260,5 +259,5 @@ img {
 
 img:hover {
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-    transform: scale(1.1);
+    transform: scale(1.03);
 }
