@@ -36,6 +36,21 @@
 </head>
 
 <body>
+    <!-- 覆写开关值 -->
+    <script>
+        // 在加载 protect-content.js 之前覆写开关值
+        window.protectConfig = {
+            enableAllProtections: {{ enableAllProtections|safe }}, // 一键开启所有
+            enableKeyboardProtection: false, // 键盘事件保护
+            enableFocusProtection: false,     // 失焦保护
+            enableRightClickProtection: false, // 右键菜单保护
+            enableCopyProtection: false,      // 防复制保护
+            enableDevToolsProtection: false, // 开发者工具保护
+            enablePrintProtection: false,     // 防打印保护
+            enableScreenshotProtection: false, // 防截屏保护
+            enableInfiniteDebugger: false    // 无限 debugger
+        };
+    </script>
     <div id="container">
         <header>
             {{ header_content|safe }}
@@ -52,6 +67,7 @@
             {{ footer_content|safe }}
         </footer>
     </div>
+    <script src="/static/js/protect-content.js"></script>
     <script> // 图片点击放大（fancybox）
         $(document).ready(function () {
             // Event delegation to handle click on dynamically loaded images

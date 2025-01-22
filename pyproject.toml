@@ -1,16 +1,19 @@
 [build-system]
 requires = ["setuptools>=64", "wheel"]  # 构建系统所需的依赖
 build-backend = "setuptools.build_meta"  # 使用 setuptools 作为构建后端
+[tool.setuptools]
+packages = ["BlogX"]  # Explicitly list the packages
 
 [project]  # 项目的元数据
 name = "BlogX"  # 包名称
-version = "0.3.0"  # 版本号
+version = "0.3.1"  # 版本号
 description = "a simple and pure blog generator based on html + css + python"  # 简要描述
 readme = "README.md"  # 详细描述文件
 authors = [
     { name = "laysath", email = "faithleysath@gmail.com" }  # 作者信息
 ]
 license = { text = "MIT" }  # 许可证类型
+
 dependencies = [
     "typer",
     "rich",

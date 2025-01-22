@@ -2,6 +2,19 @@ import markdown
 import re
 from markdown_katex import KatexExtension
 from markdown.extensions.codehilite import CodeHiliteExtension
+import base64
+
+def encode_to_base64(input_string):
+    # 将字符串转换为字节
+    input_bytes = input_string.encode('utf-8')
+    
+    # 使用 base64 编码
+    encoded_bytes = base64.b64encode(input_bytes)
+    
+    # 将编码后的字节转换回字符串
+    encoded_string = encoded_bytes.decode('utf-8')
+    
+    return encoded_string
 
 def md2html(md_content):
     # 将$...$替换为$`...`$，$$...$$替换为```math...```，\(...\)替换为$`...`$，\[...]替换为```math...```，以支持 KatexExtension
@@ -46,10 +59,21 @@ def build_single_file(input_root: Path, output_root: Path, template: str, file: 
     if file.suffix == ".md":
         with open(file, "r", encoding='utf-8') as f:
             content = md2html(f.read())
-        file_content = template.replace("{{ article_content|safe }}", content)
-        # 写入html到output_root
-        with open(output_root / file.with_suffix(".html").relative_to(input_root), "w", encoding='utf-8') as f:
-            f.write(file_content)
+        # 如果需要保护
+        if str(file).endswith(".protect.md"):
+            file = Path(str(file).replace(".protect", ""))
+            file_content = template.replace("{{ enableAllProtections|safe }}", "true").replace("{{ article_content|safe }}", "")
+            # 写入html到output_root
+            with open(output_root / file.with_suffix(".html").relative_to(input_root), "w", encoding='utf-8') as f:
+                f.write(file_content)
+            encrypt_content = encode_to_base64(content)
+            with open(output_root / file.with_suffix(".html.encrypted").relative_to(input_root), "w", encoding='utf-8') as f:
+                f.write(encrypt_content)
+        else:
+            file_content = template.replace("{{ enableAllProtections|safe }}", "false").replace("{{ article_content|safe }}", content)
+            # 写入html到output_root
+            with open(output_root / file.with_suffix(".html").relative_to(input_root), "w", encoding='utf-8') as f:
+                f.write(file_content)
     # 如果不是md文件，直接复制
     else:
         shutil.copy(file, output_root / file.relative_to(input_root))
