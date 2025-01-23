@@ -1,4 +1,4 @@
-VERSION = "0.3.1"
+VERSION = "0.3.2"
 from typer import Typer, Option, Argument, Exit
 from os import mkdir, system
 from shutil import copytree

@@ -30,29 +30,50 @@ function isMobileDevice() {
 // 禁用移动设备支持
 function disableMobileDeviceSupport() {
     if (enableScreenshotProtection && isMobileDevice() && disableMobileSupport) {
-        // 清空页面内容
+        // 立即清空页面内容，防止泄露
         document.body.innerHTML = '';
 
-        // 创建警告信息
-        const warningMessage = document.createElement('div');
-        warningMessage.style.textAlign = 'center';
-        warningMessage.style.fontSize = '26px';
-        warningMessage.style.color = 'red';
-        warningMessage.innerHTML = '⚠️<br>抱歉，本页面不支持移动设备访问，请至电脑访问。';
+        // 尝试跳转到 safebrowser 应用
+        const url = encodeURIComponent(window.location.href);
+        const safebrowserUrl = `safebrowser://open?url=${url}`;
 
-        // 设置 body 为 flex 容器，并使内容居中
-        document.body.style.display = 'flex';
-        document.body.style.justifyContent = 'center';
-        document.body.style.alignItems = 'flex-start'; // 改为 flex-start
-        document.body.style.height = '40%'; // 使 body 高度占满整个视口
-        document.body.style.margin = '0'; // 去除默认的 margin
-        document.body.style.paddingTop = '60%'; // 调整顶部间距，使内容稍微偏上
+        // 创建跳转链接
+        const link = document.createElement('a');
+        link.href = safebrowserUrl;
+        link.style.display = 'none';
+        document.body.appendChild(link);
 
-        // 将警告信息添加到页面中
-        document.body.appendChild(warningMessage);
+        // 尝试跳转
+        link.click();
 
-        // 停止后续脚本执行
-        throw new Error('Mobile device support is disabled.');
+        // 设置一个超时，检查是否跳转成功
+        setTimeout(() => {
+            // 如果跳转失败，提示用户下载 APK
+            const warningMessage = document.createElement('div');
+            warningMessage.style.textAlign = 'center';
+            warningMessage.style.fontSize = '26px';
+            warningMessage.style.color = 'red';
+            warningMessage.innerHTML = `
+                ⚠️<br>
+                抱歉，本页面不支持移动设备直接访问。<br>
+                请下载专用浏览器应用以安全浏览：<br>
+                <a href="/static/blog-reader.apk" style="color: blue; text-decoration: underline;">点击下载 SafeBrowser</a>
+            `;
+
+            // 设置 body 为 flex 容器，并使内容居中
+            document.body.style.display = 'flex';
+            document.body.style.justifyContent = 'center';
+            document.body.style.alignItems = 'flex-start';
+            document.body.style.height = '40%';
+            document.body.style.margin = '0';
+            document.body.style.paddingTop = '60%';
+
+            // 将警告信息添加到页面中
+            document.body.appendChild(warningMessage);
+
+            // 停止后续脚本执行
+            throw new Error('Mobile device support is disabled.');
+        }, 1000); // 1秒后检查是否跳转成功
     }
 }
 
