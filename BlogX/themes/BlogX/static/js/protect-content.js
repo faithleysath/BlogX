@@ -27,11 +27,53 @@ function isMobileDevice() {
     return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
 }
 
+// 检测是否为QQ、微信、阿里内置浏览器
+function isNeizhi() {
+    const ua = navigator.userAgent.toLowerCase();
+    if (ua.match(/MicroMessenger/i) === "micromessenger") {
+        return "weixin";
+    } else if (ua.match(/QQ/i) === "qq") {
+        return "QQ";
+    } else if (ua.match(/Alipay/i) === "alipay") {
+        return "alipay";
+    }
+    return false;
+}
+
 // 禁用移动设备支持
 function disableMobileDeviceSupport() {
     if (enableScreenshotProtection && isMobileDevice() && disableMobileSupport) {
         // 立即清空页面内容，防止泄露
         document.body.innerHTML = '';
+        // 检测是否为QQ、微信、阿里内置浏览器
+        const neizhiBrowser = isNeizhi();
+        if (neizhiBrowser) {
+
+            // 提示用户使用外部浏览器打开
+            const warningMessage = document.createElement('div');
+            warningMessage.style.textAlign = 'center';
+            warningMessage.style.fontSize = '26px';
+            warningMessage.style.color = 'red';
+            warningMessage.innerHTML = `
+                ⚠️<br>
+                抱歉，本页面不支持在${neizhiBrowser}内置浏览器中访问。<br>
+                请使用外部浏览器打开以继续浏览。<br>
+            `;
+
+            // 设置 body 为 flex 容器，并使内容居中
+            document.body.style.display = 'flex';
+            document.body.style.justifyContent = 'center';
+            document.body.style.alignItems = 'flex-start';
+            document.body.style.height = '40%';
+            document.body.style.margin = '0';
+            document.body.style.paddingTop = '60%';
+
+            // 将警告信息添加到页面中
+            document.body.appendChild(warningMessage);
+
+            // 停止后续脚本执行
+            throw new Error('Mobile device support is disabled.');
+        }
 
         // 尝试跳转到 safebrowser 应用
         const url = encodeURIComponent(window.location.href);
@@ -55,9 +97,9 @@ function disableMobileDeviceSupport() {
             warningMessage.style.color = 'red';
             warningMessage.innerHTML = `
                 ⚠️<br>
-                抱歉，本页面不支持移动设备直接访问。<br>
-                请下载专用浏览器应用以安全浏览：<br>
-                <a href="/static/blog-reader.apk" style="color: blue; text-decoration: underline;">点击下载 SafeBrowser</a>
+                本页面不允许截屏、录屏、复制。<br>
+                请使用指定阅读器或PC浏览器打开：<br>
+                <a href="/static/blog-reader.apk" style="color: blue; text-decoration: underline;">点击下载 Blog Reader</a>
             `;
 
             // 设置 body 为 flex 容器，并使内容居中
