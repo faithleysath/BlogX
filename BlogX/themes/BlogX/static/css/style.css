@@ -1,3 +1,12 @@
+/* 禁止页面缩放 */
+body {
+    touch-action: manipulation;
+    zoom: 1;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
 /* 修复引用块 */
 blockquote p {
     /* word-break: break-all; */
@@ -260,4 +269,23 @@ img {
 img:hover {
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
     transform: scale(1.03);
+}
+
+/* KaTeX 公式块水平滚动 */
+.katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+.katex-display > .katex {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+/* 隐藏滚动条 - Webkit浏览器 */
+.katex-display::-webkit-scrollbar {
+    display: none;
 }

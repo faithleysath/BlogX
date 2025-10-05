@@ -48,6 +48,20 @@ document.addEventListener('DOMContentLoaded', function() {
             copyIcon.classList.remove('hover-effect');
         }, 500);
     });
+
+    // 为KaTeX公式块添加水平滚轮支持
+    for (const katexDisplay of document.getElementsByClassName('katex-display')) {
+        katexDisplay.addEventListener('wheel', function(e) {
+            // 检查是否需要水平滚动
+            if (this.scrollWidth > this.clientWidth) {
+                // 阻止默认垂直滚动
+                e.preventDefault();
+                // 将垂直滚轮事件转换为水平滚动
+                this.scrollLeft += e.deltaY;
+            }
+        });
+    }
+
     clipboard.on('error', function (e) {
         console.log(e);
         toastr.error('复制失败', '', {
