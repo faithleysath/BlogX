@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: Rust
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Check formatting
+        run: cargo fmt --check
+
+      - name: Check
+        run: cargo check --all-targets
+
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Test
+        run: cargo test --all-targets
+
+      - name: No-JS smoke
+        run: |
+          cargo build
+          bash scripts/no-js-smoke.sh
+
+      - name: Accessibility smoke
+        run: bash scripts/accessibility-smoke.sh
+
+      - name: Install Firefox
+        uses: browser-actions/setup-firefox@v1
+
+      - name: Browser acceptance
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+          bash scripts/browser-acceptance.sh
+
+      - name: Serve watch smoke
+        run: bash scripts/serve-watch-smoke.sh
+
+      - name: Release artifact smoke
+        run: bash scripts/release-artifact-smoke.sh

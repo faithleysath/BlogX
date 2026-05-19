@@ -1,0 +1,13 @@
+pre code .source-line {
+  display: inline-block;
+  min-width: 100%;
+}
+
+.line-number {
+  display: inline-block;
+  min-width: 2.5rem;
+  margin-inline-end: 1rem;
+  color: var(--muted);
+  text-align: right;
+  user-select: none;
+}
