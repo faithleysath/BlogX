@@ -1,41 +1,31 @@
 # BlogX
 
-BlogX is an HTML+CSS-first static site compiler written in Rust.
+BlogX 是一个用 Rust 编写的 HTML+CSS 优先静态站点编译器。
 
-It keeps the original mental model deliberately small: the file tree is the
-website, one Markdown file is one page, and homepages, directories, navigation,
-archives, tags, and category pages are maintained by the author as normal
-content. BlogX renders pages, copies assets, applies templates, and generates
-only machine-readable site infrastructure such as `sitemap.xml` and
-`robots.txt`.
+它保留一个很小的心智模型：文件树就是网站，一个 Markdown 文件就是一个页面。首页、目录页、导航、归档、标签页和分类页都由作者作为普通内容维护；BlogX 只负责渲染页面、复制静态资源、应用模板，并生成 `sitemap.xml` 和 `robots.txt` 这类机器可读的站点基础文件。
 
-The Rust rewrite is a breaking rewrite. It does not preserve the old Python
-package, the old string-replacement templates, the old `src/_global` layout, or
-the old `.protect.md` behavior.
+这个 Rust 版本是一次破坏性重写。它不兼容旧 Python 包、不保留旧字符串替换模板、不保留旧 `src/_global` 布局，也不保留旧 `.protect.md` 行为。旧 Python 版本已归档在 `archive/python-main` 分支。
 
-## Status
+## 状态
 
-This branch contains the Rust rewrite described in
-[`docs/rust-rewrite-decisions.md`](docs/rust-rewrite-decisions.md). The
-implementation is usable for local builds, but the public compatibility story is
-the new Rust model rather than migration-free reuse of old BlogX projects.
+当前 `main` 分支包含 `docs/rust-rewrite-decisions.md` 描述的 Rust 重写版本。实现已经可以用于本地构建、预览和发布前验收；兼容策略以新的 Rust 模型为准，而不是无迁移复用旧 BlogX 项目。
 
-## Install
+## 安装
 
-From this repository:
+从仓库源码安装：
 
 ```bash
 cargo install --path .
 ```
 
-During development:
+开发时常用命令：
 
 ```bash
 cargo run -- --help
 cargo run -- init my-site
 ```
 
-## Quick Start
+## 快速开始
 
 ```bash
 blogx init my-site
@@ -44,7 +34,7 @@ blogx build --profile
 blogx serve --host 127.0.0.1 --port 8000
 ```
 
-The default project layout is:
+默认项目结构：
 
 ```text
 blogx.toml
@@ -66,11 +56,9 @@ theme/
 public/
 ```
 
-`content/` is compiled into `public/`. Markdown files become pages. Non-Markdown
-files are copied as static assets. Directories whose names start with `_` are
-private inputs and are not published directly.
+`content/` 会编译到 `public/`。Markdown 文件会生成页面，非 Markdown 文件会作为静态资源复制。任何名称以 `_` 开头的目录都是私有输入，不会直接发布。
 
-## Commands
+## 命令
 
 ```bash
 blogx init <name>
@@ -83,12 +71,11 @@ blogx serve
 blogx clean
 ```
 
-The old `deploy` command is intentionally not part of the first Rust version.
+旧版 `deploy` 命令没有进入第一版 Rust 重写。
 
-## Content Model
+## 内容模型
 
-Front matter is optional. The first version supports only page-level rendering
-metadata:
+Front matter 是可选的。第一版只支持页面级渲染元数据：
 
 ```yaml
 ---
@@ -98,33 +85,26 @@ draft: false
 ---
 ```
 
-Supported URL modes:
+支持两种 URL 模式：
 
-- `html`: `about.md` outputs `about.html`
-- `clean`: `about.md` outputs `about/index.html` and links to `about/`
+- `html`：`about.md` 输出为 `about.html`
+- `clean`：`about.md` 输出为 `about/index.html`，公开链接为 `about/`
 
-BlogX rewrites only local links to Markdown pages, for example
-`[About](about.md)`. External links, anchors, absolute URLs, and non-Markdown
-links are left as written.
+BlogX 只会改写指向本地 Markdown 页面的链接，例如 `[About](about.md)`。外部链接、锚点、绝对路径和非 Markdown 链接会保持原样。
 
-## Rendering
+## 渲染能力
 
-Markdown rendering is based on `comrak` and includes CommonMark, tables,
-footnotes, task lists, heading anchors, fenced code blocks, and build-time math
-rendering.
+Markdown 渲染基于 `comrak`，支持 CommonMark、表格、脚注、任务列表、标题锚点、围栏代码块，以及构建期数学公式渲染。
 
-Math is rendered at build time with KaTeX-compatible HTML. The default theme
-ships local KaTeX CSS and fonts, so browser-side JavaScript is not required for
-formula display.
+数学公式在构建期渲染为 KaTeX 兼容 HTML。默认主题自带本地 KaTeX CSS 和字体，不需要浏览器端 JavaScript 才能显示公式。
 
-Code blocks are highlighted at build time with `syntect`. Line numbers are
-static HTML and CSS, not client-side rendering.
+代码块使用 `syntect` 在构建期高亮。行号是静态 HTML/CSS，不依赖客户端脚本。
 
-## Themes
+## 主题系统
 
-Themes use MiniJinja templates under `theme/layouts/`.
+主题使用 `theme/layouts/` 下的 MiniJinja 模板。
 
-Templates receive explicit context objects:
+模板接收显式上下文对象：
 
 - `site`
 - `page`
@@ -133,46 +113,68 @@ Templates receive explicit context objects:
 - `assets`
 - `build`
 
-Built-in helpers:
+内置 helper：
 
 - `asset_url("css/main.css")`
 - `url_for("about.md")`
 - `markdown("**small fragment**")`
 
-Content partials live in `content/_partials/`. Markdown partials are rendered to
-HTML, HTML partials are passed through, and keys are derived deterministically
-from their relative path without the extension. For example,
-`content/_partials/sidebar.md` is exposed as `partials.sidebar`,
-`content/_partials/sections/sidebar.md` is exposed as
-`partials["sections.sidebar"]`, and `content/_partials/nav/index.html` is exposed
-as `partials.nav`.
+内容 partial 位于 `content/_partials/`。Markdown partial 会渲染为 HTML，HTML partial 会原样传入模板，key 由相对路径确定。例如：
 
-## No-JS Principle
+- `content/_partials/sidebar.md` 暴露为 `partials.sidebar`
+- `content/_partials/sections/sidebar.md` 暴露为 `partials["sections.sidebar"]`
+- `content/_partials/nav/index.html` 暴露为 `partials.nav`
 
-The generated site must remain readable and navigable with JavaScript disabled.
-The default theme uses HTML and CSS for reading, navigation, responsive layout,
-math display, code highlighting, and line numbers. JavaScript is limited to
-progressive enhancement such as copy buttons.
+如果 partial 没有被任何页面模板访问，构建会给出 unused partial warning。
 
-## Performance
+## 默认主题
 
-BlogX uses a compiler-style build pipeline with parallel page rendering,
-persistent cache state in `.blogx/cache/`, cached KaTeX expressions, incremental
-static asset copies, and orphan output cleanup.
+当前默认主题是 Rust 重写后的新主题，不是旧 Python 版本模板的原样迁移。
 
-Use `blogx build --profile` to inspect scan, partial, Markdown, KaTeX, code
-highlighting, layout, asset, cache, and total build timings.
+新主题的目标是满足 HTML+CSS-first 约束：
 
-## Development
+- 不依赖外部 CDN 完成核心渲染
+- 不依赖外部字体完成核心渲染
+- 使用本地 KaTeX CSS 和字体
+- 使用本地 syntax CSS
+- 语义化 HTML
+- skip link
+- 清晰的 focus 样式
+- 响应式布局
+- 支持 `prefers-reduced-motion`
+- JavaScript 只用于复制代码按钮等渐进增强
+
+旧默认模板仍可在 `archive/python-main` 分支查看。它依赖 Google Fonts、BootCDN、Font Awesome、jQuery、fancybox、toastr 和旧 protect 脚本；这些能力没有按原样带入 Rust 版默认主题。
+
+## No-JS 原则
+
+生成的网站在禁用 JavaScript 时仍必须可读、可导航。默认主题用 HTML 和 CSS 完成阅读、导航、响应式布局、数学公式、代码高亮和行号。JavaScript 只用于渐进增强，例如代码复制按钮。
+
+## 性能与缓存
+
+BlogX 使用编译器式构建流水线，包含并行页面渲染、`.blogx/cache/` 持久缓存、KaTeX 表达式缓存、静态资源增量复制、theme asset 清理和 orphan output 清理。
+
+使用 profile 查看构建耗时：
+
+```bash
+blogx build --profile
+```
+
+profile 会显示 source scan、template load、partial render、Markdown、KaTeX、代码高亮、layout、asset copy、site infrastructure、cache 和 total build 时间。
+
+## 开发与验收
 
 ```bash
 cargo fmt --check
-cargo check
-cargo test
+cargo clippy --all-targets -- -D warnings
+cargo test --all-targets
 bash scripts/no-js-smoke.sh
+bash scripts/accessibility-smoke.sh
 bash scripts/browser-acceptance.sh
 bash scripts/serve-watch-smoke.sh
+bash scripts/release-artifact-smoke.sh
 ```
 
-Manual release acceptance is tracked in
-[`docs/manual-acceptance.md`](docs/manual-acceptance.md).
+发布前手工验收清单见 `docs/manual-acceptance.md`。
+
+约束实现核对见 `docs/constraint-compliance-checklist.md`。
