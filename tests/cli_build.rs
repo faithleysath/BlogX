@@ -833,6 +833,34 @@ fn all_katex_delimiters_render_at_build_time() {
 }
 
 #[test]
+fn katex_matrix_environments_render_at_build_time() {
+    let temp = TempDir::new().unwrap();
+    let project = temp.path().join("site");
+
+    Command::cargo_bin("blogx")
+        .unwrap()
+        .arg("init")
+        .arg(&project)
+        .assert()
+        .success();
+
+    std::fs::write(
+        project.join("content/index.md"),
+        "# Matrix Math\n\n$$\n\\begin{vmatrix} a & b \\\\ c & d \\end{vmatrix}\n$$\n\n$$\n\\begin{pmatrix} x & y \\\\ z & w \\end{pmatrix}\n$$\n",
+    )
+    .unwrap();
+
+    build(&project, &[]).success();
+
+    let html = std::fs::read_to_string(project.join("public/index.html")).unwrap();
+    assert!(html.matches("class=\"katex").count() >= 2);
+    assert!(!html.contains("katex-error"));
+    assert!(html.matches("<mtable").count() >= 2);
+    assert!(html.contains("fence=\"true\">∣</mo>"));
+    assert!(html.contains("<mo fence=\"true\">(</mo>"));
+}
+
+#[test]
 fn katex_expression_cache_persists_across_build_processes() {
     let temp = TempDir::new().unwrap();
     let project = temp.path().join("site");

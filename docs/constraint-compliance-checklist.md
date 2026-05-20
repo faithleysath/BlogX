@@ -37,8 +37,9 @@ This checklist tracks the implementation target from
 
 ## External Release Verification
 
-- [ ] After a `v*` tag is pushed, verify the GitHub release contains the six
-  workflow-built archives: Linux x86_64 glibc, Linux aarch64 glibc, Linux x86_64
-  musl, macOS x86_64, macOS aarch64, and Windows x86_64. This depends on the
-  external GitHub release run and cannot be proven from a local working tree
-  before a tag exists.
+- [ ] After a `v*` tag is pushed, verify the GitHub release contains the four
+  workflow-built archives: Linux x86_64 glibc, Linux aarch64 glibc, macOS
+  x86_64, and macOS aarch64. The Rust KaTeX binding uses its default QuickJS
+  backend, so Windows and musl release targets are intentionally excluded from
+  the supported prebuilt matrix. This depends on the external GitHub release run
+  and cannot be proven from a local working tree before a tag exists.
