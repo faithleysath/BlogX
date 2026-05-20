@@ -1,3 +1,43 @@
+@font-face {
+  font-family: "LXGW WenKai TC";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/lxgw-wenkai-tc-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Roboto Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/roboto-mono-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Roboto Mono";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/roboto-mono-400-italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Roboto Mono";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/roboto-mono-700.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "ZCOOL XiaoWei";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/zcool-xiaowei-400.woff2") format("woff2");
+}
+
 @layer reset, base, layout, content, utilities;
 
 @layer reset {
