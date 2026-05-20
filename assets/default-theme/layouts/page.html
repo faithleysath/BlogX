@@ -1,7 +1,14 @@
 {% extends "layouts/base.html" %}
 
 {% block content %}
-  <article class="page">
-    {{ content | safe }}
-  </article>
+  <div class="content-layout">
+    <article class="page">
+      {{ content | safe }}
+    </article>
+    {% if partials.sidebar %}
+      <aside class="sidebar" aria-label="Sidebar">
+        {{ partials.sidebar | safe }}
+      </aside>
+    {% endif %}
+  </div>
 {% endblock %}

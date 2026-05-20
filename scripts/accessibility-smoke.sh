@@ -42,7 +42,7 @@ CSS="$SITE/public/assets/theme/css/main.css"
 test -f "$HTML"
 test -f "$CSS"
 
-grep -q '<html lang="en">' "$HTML"
+grep -q '<html lang="zh">' "$HTML"
 grep -q '<a class="skip-link" href="#content">Skip to content</a>' "$HTML"
 grep -q '<main id="content" class="site-main">' "$HTML"
 grep -q '<article class="page">' "$HTML"

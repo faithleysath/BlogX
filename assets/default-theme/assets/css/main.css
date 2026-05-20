@@ -7,45 +7,50 @@
     box-sizing: border-box;
   }
 
+  html,
+  body {
+    min-height: 100%;
+  }
+
   body {
     margin: 0;
+    touch-action: manipulation;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 }
 
 @layer base {
   :root {
-    color-scheme: light dark;
-    --bg: #fbfbf8;
-    --fg: #1f2328;
-    --muted: #62666d;
-    --line: #d8d7d0;
-    --accent: #176b87;
-    --surface: #ffffff;
-    --code-bg: #f1f3f5;
-    --measure: 72ch;
-    --space: clamp(1rem, 2vw, 1.5rem);
+    color-scheme: light;
+    --bg: #fbfaf7;
+    --fg: #26211f;
+    --muted: #8f8881;
+    --line: #e5ded7;
+    --line-strong: #d8ccc2;
+    --accent: #c0392b;
+    --accent-hover: #dd5353;
+    --surface: #fffefc;
+    --note-bg: #fff7d6;
+    --code-bg: #1f1f1f;
+    --inline-code-bg: #fafafa;
+    --inline-code-fg: #666;
+    --shadow: 2px 2px 10px rgb(0 0 0 / 10%);
+    --measure: 780px;
+    --shell: 1000px;
     font-family:
-      ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-      sans-serif;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #111315;
-      --fg: #e8e6df;
-      --muted: #b2aea4;
-      --line: #33373b;
-      --accent: #79c0d8;
-      --surface: #181b1f;
-      --code-bg: #20242a;
-    }
+      "LXGW WenKai TC", "STKaiti", "KaiTi", "Noto Serif CJK SC",
+      "Songti SC", serif;
   }
 
   body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
     background: var(--bg);
     color: var(--fg);
     font-size: 1rem;
-    line-height: 1.65;
+    line-height: 1.75;
     text-rendering: optimizeLegibility;
   }
 
@@ -55,7 +60,17 @@
   }
 
   a:hover {
-    text-decoration-thickness: 0.12em;
+    color: var(--accent-hover);
+  }
+
+  a[href^="http"]::after {
+    content: "↗";
+    display: inline-block;
+    margin-inline-start: 0.18em;
+    color: var(--muted);
+    font-size: 0.72em;
+    line-height: 1;
+    vertical-align: super;
   }
 
   :focus-visible {
@@ -67,7 +82,7 @@
 @layer layout {
   .site-shell {
     container-type: inline-size;
-    width: min(100% - 2rem, 1100px);
+    width: min(93%, var(--shell));
     margin-inline: auto;
   }
 
@@ -77,11 +92,10 @@
     align-items: baseline;
     justify-content: space-between;
     padding-block: 1.25rem;
-    border-bottom: 1px solid var(--line);
   }
 
   .site-title {
-    font-size: 1.05rem;
+    font-size: 1.12rem;
     font-weight: 700;
   }
 
@@ -98,17 +112,86 @@
   }
 
   .site-main {
-    padding-block: clamp(2rem, 5vw, 4rem);
+    flex: 1;
+    padding-block: 1.25rem 2.5rem;
+  }
+
+  .content-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
   }
 
   .page {
+    flex: 1 1 auto;
     max-width: var(--measure);
+    min-width: 0;
+  }
+
+  .sidebar {
+    flex: 0 0 280px;
+    overflow: hidden;
+    padding: 1.25rem;
+    background: var(--surface);
+    border: 1px dashed var(--line);
+    box-shadow: var(--shadow);
+  }
+
+  .sidebar h2,
+  .sidebar h3 {
+    margin-block: 0 0.7rem;
+    padding-block-end: 0.35rem;
+    border-bottom: 2px solid var(--accent);
+    color: var(--accent);
+    font-size: 1.08rem;
+  }
+
+  .sidebar ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .sidebar li {
+    margin-block: 0.45rem;
   }
 
   .site-footer {
-    color: var(--muted);
-    padding-block: 2rem;
-    border-top: 1px solid var(--line);
+    width: 100%;
+    margin-top: auto;
+    padding-block: 0.75rem;
+    color: #aaa;
+    border-top: 1px solid rgb(0 0 0 / 10%);
+    font-family: "Microsoft YaHei", system-ui, sans-serif;
+    font-size: 0.9rem;
+  }
+
+  .site-footer p {
+    margin: 0;
+  }
+
+  .site-footer a {
+    color: #aaa;
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    text-decoration: underline;
+  }
+
+  @container (max-width: 66rem) {
+    .content-layout {
+      flex-direction: column;
+    }
+
+    .sidebar {
+      width: 100%;
+      flex-basis: auto;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+    }
   }
 
   @container (max-width: 42rem) {
@@ -121,16 +204,17 @@
 
 @layer content {
   :where(h1, h2, h3, h4) {
-    line-height: 1.2;
-    margin-block: 1.8em 0.55em;
+    line-height: 1.25;
+    margin-block: 1.8em 0.6em;
   }
 
   h1 {
-    font-size: clamp(2rem, 5vw, 3.6rem);
+    text-align: center;
+    font-size: clamp(2rem, 5vw, 3.2rem);
   }
 
   h2 {
-    font-size: clamp(1.45rem, 3vw, 2.1rem);
+    font-size: clamp(1.45rem, 3vw, 2rem);
   }
 
   p,
@@ -142,46 +226,115 @@
     margin-block: 1rem;
   }
 
+  blockquote {
+    padding: 0.5rem 1rem;
+    background: #f9f9f9;
+    border-left: 5px solid var(--accent);
+    word-break: break-word;
+  }
+
+  article blockquote,
+  article .note {
+    background: var(--note-bg);
+  }
+
   img {
+    display: block;
+    width: 100%;
     max-width: 100%;
     height: auto;
+    margin: 1rem auto;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  img:hover {
+    box-shadow: 2px 2px 10px rgb(0 0 0 / 24%);
+    transform: scale(1.015);
   }
 
   table {
     display: block;
     max-width: 100%;
+    min-width: 50%;
+    margin-inline: auto;
     overflow-x: auto;
     border-collapse: collapse;
+    background: var(--surface);
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 0.86rem;
+    text-align: left;
   }
 
-  th,
+  th {
+    padding: 0.6rem 0.5rem;
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent);
+    font-weight: 400;
+  }
+
   td {
-    padding: 0.35rem 0.55rem;
-    border: 1px solid var(--line);
+    padding: 0.55rem 0.5rem 0.1rem;
+    color: var(--accent);
+    word-break: break-word;
   }
 
   pre {
+    position: relative;
     overflow-x: auto;
     padding: 1rem;
     background: var(--code-bg);
+    border-radius: 8px;
+    scrollbar-width: thin;
   }
 
+  pre,
   code {
     font-family:
-      ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-    font-size: 0.92em;
+      "Roboto Mono", "ZCOOL XiaoWei", ui-monospace, "SFMono-Regular",
+      Consolas, "Liberation Mono", monospace;
+  }
+
+  pre code {
+    color: #ddd;
   }
 
   :not(pre) > code {
-    padding: 0.1rem 0.25rem;
-    border-radius: 0.25rem;
-    background: var(--code-bg);
+    padding: 0.05rem 0.25rem;
+    margin-inline: 0.15rem;
+    color: var(--inline-code-fg);
+    background: var(--inline-code-bg);
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 0.92em;
+    word-break: break-word;
   }
 
-  blockquote {
-    padding-inline-start: 1rem;
-    color: var(--muted);
-    border-inline-start: 4px solid var(--line);
+  .source-line {
+    display: block;
+    min-width: max-content;
+  }
+
+  .line-number {
+    display: inline-block;
+    min-width: 2.25rem;
+    margin-inline-end: 0.75rem;
+    color: #777;
+    text-align: right;
+    user-select: none;
+  }
+
+  .katex-display {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+
+  .katex-display::-webkit-scrollbar {
+    display: none;
   }
 }
 

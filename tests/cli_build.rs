@@ -33,6 +33,7 @@ fn init_and_build_site() {
     assert!(project.join("public/about.html").exists());
     assert!(project.join("public/notes/hello.html").exists());
     assert!(project.join("content/_drafts/unfinished.md").exists());
+    assert!(project.join("content/_partials/sidebar.md").exists());
     assert!(project.join("public/assets/theme/css/main.css").exists());
     assert!(project.join("public/sitemap.xml").exists());
     assert!(project.join("public/robots.txt").exists());
@@ -52,6 +53,7 @@ fn init_and_build_site() {
     let html = std::fs::read_to_string(project.join("public/index.html")).unwrap();
     assert!(html.contains(r#"<meta name="generator" content="BlogX"#));
     assert!(html.contains(r#"<nav class="site-nav" aria-label="Primary">"#));
+    assert!(html.contains(r#"<aside class="sidebar" aria-label="Sidebar">"#));
 }
 
 #[test]

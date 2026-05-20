@@ -129,7 +129,7 @@ Markdown 渲染基于 `comrak`，支持 CommonMark、表格、脚注、任务列
 
 ## 默认主题
 
-当前默认主题是 Rust 重写后的新主题，不是旧 Python 版本模板的原样迁移。
+当前默认主题是 Rust 重写后的新主题，不是旧 Python 版本模板代码的原样迁移；但它保留了旧模板的主要 UI 气质。
 
 新主题的目标是满足 HTML+CSS-first 约束：
 
@@ -144,7 +144,9 @@ Markdown 渲染基于 `comrak`，支持 CommonMark、表格、脚注、任务列
 - 支持 `prefers-reduced-motion`
 - JavaScript 只用于复制代码按钮等渐进增强
 
-旧默认模板仍可在 `archive/python-main` 分支查看。它依赖 Google Fonts、BootCDN、Font Awesome、jQuery、fancybox、toastr 和旧 protect 脚本；这些能力没有按原样带入 Rust 版默认主题。
+视觉上，新主题延续了旧模板的中文博客审美：文章+侧栏布局、红色链接、居中标题、浅色纸面、虚线侧栏、暖色引用块、图片阴影、深色代码块和外链标记。
+
+旧默认模板仍可在 `archive/python-main` 分支查看。它依赖 Google Fonts、BootCDN、Font Awesome、jQuery、fancybox、toastr 和旧 protect 脚本；这些实现没有按原样带入 Rust 版默认主题。
 
 ## No-JS 原则
 

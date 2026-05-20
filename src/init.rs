@@ -136,6 +136,16 @@ Drafts stay private until moved out of `_drafts/` or marked `draft: false`.
     )
     .context("failed to write content/_partials/footer.md")?;
 
+    fs::write(
+        name.join("content/_partials/sidebar.md"),
+        r#"## Notes
+
+- [Hello](notes/hello.md)
+- Edit `content/_partials/sidebar.md`
+"#,
+    )
+    .context("failed to write content/_partials/sidebar.md")?;
+
     copy_included_dir(&DEFAULT_THEME, &name.join("theme"))?;
     println!("initialized {}", name.display());
     Ok(())
