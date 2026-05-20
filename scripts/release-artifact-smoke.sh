@@ -14,17 +14,17 @@ for target in \
   aarch64-apple-darwin \
   x86_64-pc-windows-msvc
 do
-  grep -q "target: $target" "$WORKFLOW"
-  grep -q "blogx-\${{ matrix.target }}" "$WORKFLOW"
+  grep -Fq "target: $target" "$WORKFLOW"
+  grep -Fq "blogx-\${{ matrix.target }}" "$WORKFLOW"
 done
 
-grep -q "matrix.target == 'x86_64-unknown-linux-musl'" "$WORKFLOW"
-grep -q "sudo apt-get install -y musl-tools" "$WORKFLOW"
-grep -q 'cargo build --release --locked --target ${{ matrix.target }}' "$WORKFLOW"
-grep -q 'tar -C dist -czf "blogx-${{ matrix.target }}.tar.gz" blogx' "$WORKFLOW"
-grep -q 'Compress-Archive -Path dist/blogx.exe -DestinationPath "blogx-${{ matrix.target }}.zip"' "$WORKFLOW"
-grep -q 'softprops/action-gh-release@v2' "$WORKFLOW"
-grep -q 'blogx-${{ matrix.target }}.tar.gz' "$WORKFLOW"
-grep -q 'blogx-${{ matrix.target }}.zip' "$WORKFLOW"
+grep -Fq "matrix.target == 'x86_64-unknown-linux-musl'" "$WORKFLOW"
+grep -Fq "sudo apt-get install -y musl-tools" "$WORKFLOW"
+grep -Fq 'cargo build --release --locked --target ${{ matrix.target }}' "$WORKFLOW"
+grep -Fq 'tar -C dist -czf "dist-release/blogx-${{ matrix.target }}.tar.gz" blogx' "$WORKFLOW"
+grep -Fq 'Compress-Archive -Path dist/blogx.exe -DestinationPath "dist-release/blogx-${{ matrix.target }}.zip"' "$WORKFLOW"
+grep -Fq 'actions/upload-artifact@v6' "$WORKFLOW"
+grep -Fq 'gh run download "$GITHUB_RUN_ID" --dir release-assets' "$WORKFLOW"
+grep -Fq 'gh release create "$GITHUB_REF_NAME" release-assets/*/blogx-* --title "$GITHUB_REF_NAME" --verify-tag' "$WORKFLOW"
 
 echo "release artifact smoke passed"
