@@ -37,8 +37,8 @@ This checklist tracks the implementation target from
 
 ## External Release Verification
 
-- [ ] After a `v*` tag is pushed, verify the GitHub release contains the seven
+- [ ] After a `v*` tag is pushed, verify the GitHub release contains the six
   workflow-built archives: Linux x86_64 glibc, Linux aarch64 glibc, Linux x86_64
-  musl, macOS x86_64, macOS aarch64, Windows x86_64, and Windows aarch64. This
-  depends on the external GitHub release run and cannot be proven from a local
-  working tree before a tag exists.
+  musl, macOS x86_64, macOS aarch64, and Windows x86_64. This depends on the
+  external GitHub release run and cannot be proven from a local working tree
+  before a tag exists.

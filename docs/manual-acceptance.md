@@ -65,8 +65,8 @@ Performance and distribution acceptance:
   single-page rebuild profile output.
 - Run `scripts/release-artifact-smoke.sh` before tagging a release to confirm
   the release workflow still covers Linux x86_64 glibc, Linux aarch64 glibc,
-  Linux x86_64 musl, macOS Intel, macOS Apple Silicon, Windows x86_64, and
-  Windows aarch64 artifacts.
-- After pushing a `v*` tag, confirm the GitHub release contains the seven
+  Linux x86_64 musl, macOS Intel, macOS Apple Silicon, and Windows x86_64
+  artifacts.
+- After pushing a `v*` tag, confirm the GitHub release contains the six
   expected archives and that each archive contains the `blogx` binary for its
   target.

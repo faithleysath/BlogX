@@ -12,8 +12,7 @@ for target in \
   x86_64-unknown-linux-musl \
   x86_64-apple-darwin \
   aarch64-apple-darwin \
-  x86_64-pc-windows-msvc \
-  aarch64-pc-windows-msvc
+  x86_64-pc-windows-msvc
 do
   grep -q "target: $target" "$WORKFLOW"
   grep -q "blogx-\${{ matrix.target }}" "$WORKFLOW"
