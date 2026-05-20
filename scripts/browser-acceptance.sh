@@ -55,8 +55,8 @@ user_pref("javascript.enabled", false);
 user_pref("dom.disable_open_during_load", true);
 JS
 
-firefox --headless --profile "$PROFILE" --window-size 1280,900 --screenshot "$TMP_DIR/desktop.png" "file://$HTML" >/dev/null 2>&1
-firefox --headless --profile "$PROFILE" --window-size 390,844 --screenshot "$TMP_DIR/mobile.png" "file://$HTML" >/dev/null 2>&1
+timeout 30s firefox --headless --profile "$PROFILE" --window-size 1280,900 --screenshot "$TMP_DIR/desktop.png" "file://$HTML" >/dev/null 2>&1
+timeout 30s firefox --headless --profile "$PROFILE" --window-size 390,844 --screenshot "$TMP_DIR/mobile.png" "file://$HTML" >/dev/null 2>&1
 
 test -s "$TMP_DIR/desktop.png"
 test -s "$TMP_DIR/mobile.png"

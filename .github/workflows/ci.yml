@@ -44,7 +44,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y imagemagick
-          bash scripts/browser-acceptance.sh
+          timeout 2m bash scripts/browser-acceptance.sh
 
       - name: Serve watch smoke
         run: bash scripts/serve-watch-smoke.sh
