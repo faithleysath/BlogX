@@ -41,6 +41,11 @@ fn init_and_build_site() {
     assert!(project.join("theme/partials/header.html").exists());
     assert!(project.join("theme/partials/footer.html").exists());
     assert!(project.join("theme/partials/nav.html").exists());
+    assert!(
+        project
+            .join("public/assets/theme/js/copy-tex.min.js")
+            .exists()
+    );
 
     let sitemap = std::fs::read_to_string(project.join("public/sitemap.xml")).unwrap();
     assert!(sitemap.contains("<loc>/index.html</loc>"));
@@ -52,6 +57,7 @@ fn init_and_build_site() {
 
     let html = std::fs::read_to_string(project.join("public/index.html")).unwrap();
     assert!(html.contains(r#"<meta name="generator" content="BlogX"#));
+    assert!(html.contains(r#"<script src="/assets/theme/js/copy-tex.min.js" defer></script>"#));
     assert!(html.contains(r#"<nav class="site-nav" aria-label="Primary">"#));
     assert!(html.contains(r#"<aside class="sidebar" aria-label="Sidebar">"#));
 }
@@ -827,6 +833,8 @@ fn all_katex_delimiters_render_at_build_time() {
 
     let html = std::fs::read_to_string(project.join("public/index.html")).unwrap();
     assert!(html.matches("class=\"katex").count() >= 4);
+    assert!(html.contains("annotation encoding=\"application/x-tex\""));
+    assert!(html.contains(r#"<script src="/assets/theme/js/copy-tex.min.js" defer></script>"#));
     assert!(!html.contains("$$"));
     assert!(!html.contains("\\("));
     assert!(!html.contains("\\["));
