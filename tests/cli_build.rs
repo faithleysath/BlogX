@@ -72,7 +72,8 @@ fn init_and_build_site() {
     assert!(main_css.contains(".code-block"));
     assert!(main_css.contains(".code-block pre"));
     assert!(main_css.contains("position: sticky"));
-    assert!(main_css.contains("left: 1rem"));
+    assert!(main_css.contains("padding-left: 1rem"));
+    assert!(main_css.contains("left: 0"));
 }
 
 #[test]
