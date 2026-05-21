@@ -298,12 +298,17 @@
 
   pre {
     position: relative;
-    overflow-x: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     margin: 1em 0;
     padding: 1rem;
     background: var(--code-bg);
     border-radius: 8px;
-    scrollbar-width: thin;
+    scrollbar-width: none;
+  }
+
+  pre::-webkit-scrollbar {
+    display: none;
   }
 
   pre,
