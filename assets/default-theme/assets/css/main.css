@@ -351,12 +351,13 @@
     display: inline-block;
     min-width: 2.25rem;
     margin-inline-end: 0.75rem;
-    padding-left: 1rem;
     position: sticky;
     left: 0;
     z-index: 1;
     background: var(--code-bg);
-    box-shadow: 1rem 0 0 var(--code-bg);
+    box-shadow:
+      -1rem 0 0 var(--code-bg),
+      1rem 0 0 var(--code-bg);
     color: #777;
     text-align: right;
     user-select: none;
