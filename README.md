@@ -68,6 +68,8 @@ blogx build --no-cache
 blogx build --jobs 8
 blogx build --profile
 blogx serve
+blogx theme sync
+blogx theme sync --prune
 blogx clean
 ```
 
@@ -147,6 +149,18 @@ Markdown 渲染基于 `comrak`，支持 CommonMark、表格、脚注、任务列
 视觉上，新主题延续了旧模板的中文博客审美：文章+侧栏布局、红色链接、居中标题、浅色纸面、虚线侧栏、暖色引用块、图片阴影、深色代码块和外链标记。
 
 旧默认模板仍可在 `archive/python-main` 分支查看。它依赖 Google Fonts、BootCDN、Font Awesome、jQuery、fancybox、toastr 和旧 protect 脚本；这些实现没有按原样带入 Rust 版默认主题。
+
+如果项目想重新同步当前 BlogX 内置的默认主题，可以在项目根目录运行：
+
+```bash
+blogx theme sync
+```
+
+这会根据 `blogx.toml` 里的 `paths.theme` 覆盖写入内置默认主题文件。默认不会删除目标主题目录里额外存在的文件；如果目标主题需要严格恢复成内置默认主题，使用：
+
+```bash
+blogx theme sync --prune
+```
 
 ## No-JS 原则
 

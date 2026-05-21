@@ -1,9 +1,28 @@
-use std::{fs, path::Path};
+use std::{
+    cmp::Reverse,
+    collections::HashSet,
+    fs, io,
+    path::{Path, PathBuf},
+};
 
 use anyhow::{Context, Result, bail};
 use include_dir::{Dir, include_dir};
+use walkdir::WalkDir;
 
 static DEFAULT_THEME: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/assets/default-theme");
+
+#[derive(Debug, Default, Clone, Copy, Eq, PartialEq)]
+pub struct ThemeSyncStats {
+    pub files_copied: usize,
+    pub files_pruned: usize,
+    pub dirs_pruned: usize,
+}
+
+#[derive(Debug, Default)]
+struct ThemeManifest {
+    files: HashSet<PathBuf>,
+    dirs: HashSet<PathBuf>,
+}
 
 pub fn init_project(name: &Path) -> Result<()> {
     if name.exists() {
@@ -146,58 +165,122 @@ Drafts stay private until moved out of `_drafts/` or marked `draft: false`.
     )
     .context("failed to write content/_partials/sidebar.md")?;
 
-    copy_included_dir(&DEFAULT_THEME, &name.join("theme"))?;
+    sync_default_theme(&name.join("theme"), false)?;
     println!("initialized {}", name.display());
     Ok(())
 }
 
 pub fn copy_default_theme(dest: &Path) -> Result<()> {
-    copy_included_dir(&DEFAULT_THEME, dest)
+    sync_default_theme(dest, false).map(|_| ())
 }
 
-fn copy_included_dir(dir: &Dir<'_>, dest: &Path) -> Result<()> {
+pub fn sync_default_theme(dest: &Path, prune: bool) -> Result<ThemeSyncStats> {
     fs::create_dir_all(dest).with_context(|| format!("failed to create {}", dest.display()))?;
-    let root = dir.path().to_path_buf();
 
-    for file in dir.files() {
-        let relative = file
-            .path()
-            .strip_prefix(&root)
-            .unwrap_or_else(|_| file.path());
-        let path = dest.join(relative);
-        if let Some(parent) = path.parent() {
-            fs::create_dir_all(parent)
-                .with_context(|| format!("failed to create {}", parent.display()))?;
-        }
-        fs::write(&path, file.contents())
-            .with_context(|| format!("failed to write {}", path.display()))?;
-    }
+    let root = DEFAULT_THEME.path().to_path_buf();
+    let mut manifest = ThemeManifest::default();
+    let files_copied = copy_included_dir_with_root(&DEFAULT_THEME, &root, dest, &mut manifest)?;
+    let (files_pruned, dirs_pruned) = if prune {
+        prune_extra_theme_entries(dest, &manifest)?
+    } else {
+        (0, 0)
+    };
+
+    Ok(ThemeSyncStats {
+        files_copied,
+        files_pruned,
+        dirs_pruned,
+    })
+}
+
+fn copy_included_dir_with_root(
+    dir: &Dir<'_>,
+    root: &Path,
+    dest: &Path,
+    manifest: &mut ThemeManifest,
+) -> Result<usize> {
+    let mut copied = 0;
 
     for child in dir.dirs() {
-        copy_included_dir_with_root(child, &root, dest)?;
+        let relative = child
+            .path()
+            .strip_prefix(root)
+            .unwrap_or_else(|_| child.path());
+        if !relative.as_os_str().is_empty() {
+            manifest.dirs.insert(relative.to_path_buf());
+            fs::create_dir_all(dest.join(relative))
+                .with_context(|| format!("failed to create {}", dest.join(relative).display()))?;
+        }
+        copied += copy_included_dir_with_root(child, root, dest, manifest)?;
     }
 
-    Ok(())
-}
-
-fn copy_included_dir_with_root(dir: &Dir<'_>, root: &Path, dest: &Path) -> Result<()> {
     for file in dir.files() {
         let relative = file
             .path()
             .strip_prefix(root)
             .unwrap_or_else(|_| file.path());
         let path = dest.join(relative);
+        manifest.files.insert(relative.to_path_buf());
+        record_parent_dirs(relative, &mut manifest.dirs);
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent)
                 .with_context(|| format!("failed to create {}", parent.display()))?;
         }
         fs::write(&path, file.contents())
             .with_context(|| format!("failed to write {}", path.display()))?;
+        copied += 1;
     }
 
-    for child in dir.dirs() {
-        copy_included_dir_with_root(child, root, dest)?;
+    Ok(copied)
+}
+
+fn record_parent_dirs(path: &Path, dirs: &mut HashSet<PathBuf>) {
+    let mut parent = path.parent();
+    while let Some(dir) = parent {
+        if dir.as_os_str().is_empty() {
+            break;
+        }
+        dirs.insert(dir.to_path_buf());
+        parent = dir.parent();
+    }
+}
+
+fn prune_extra_theme_entries(dest: &Path, manifest: &ThemeManifest) -> Result<(usize, usize)> {
+    let mut files_pruned = 0;
+    let mut dirs = Vec::new();
+
+    for entry in WalkDir::new(dest).min_depth(1).follow_links(false) {
+        let entry = entry.with_context(|| format!("failed to read {}", dest.display()))?;
+        let path = entry.path().to_path_buf();
+        let relative = path
+            .strip_prefix(dest)
+            .with_context(|| format!("failed to inspect {}", path.display()))?
+            .to_path_buf();
+
+        if entry.file_type().is_dir() {
+            dirs.push((entry.depth(), path, relative));
+        } else if !manifest.files.contains(&relative) {
+            fs::remove_file(&path)
+                .with_context(|| format!("failed to remove {}", path.display()))?;
+            files_pruned += 1;
+        }
     }
 
-    Ok(())
+    dirs.sort_by_key(|entry| Reverse(entry.0));
+    let mut dirs_pruned = 0;
+    for (_, path, relative) in dirs {
+        if manifest.dirs.contains(&relative) {
+            continue;
+        }
+        match fs::remove_dir(&path) {
+            Ok(()) => dirs_pruned += 1,
+            Err(err) if err.kind() == io::ErrorKind::NotFound => {}
+            Err(err) if err.kind() == io::ErrorKind::DirectoryNotEmpty => {}
+            Err(err) => {
+                return Err(err).with_context(|| format!("failed to remove {}", path.display()));
+            }
+        }
+    }
+
+    Ok((files_pruned, dirs_pruned))
 }

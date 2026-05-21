@@ -63,6 +63,71 @@ fn init_and_build_site() {
 }
 
 #[test]
+fn theme_sync_updates_configured_theme_directory() {
+    let temp = TempDir::new().unwrap();
+    let project = temp.path().join("site");
+
+    Command::cargo_bin("blogx")
+        .unwrap()
+        .arg("init")
+        .arg(&project)
+        .assert()
+        .success();
+
+    let config = project.join("blogx.toml");
+    let raw = std::fs::read_to_string(&config).unwrap();
+    std::fs::write(
+        &config,
+        raw.replace("theme = \"theme\"", "theme = \"custom-theme\""),
+    )
+    .unwrap();
+    std::fs::rename(project.join("theme"), project.join("custom-theme")).unwrap();
+
+    let main_css = project.join("custom-theme/assets/css/main.css");
+    std::fs::write(&main_css, "stale css").unwrap();
+
+    Command::cargo_bin("blogx")
+        .unwrap()
+        .current_dir(&project)
+        .args(["theme", "sync"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(
+            "synced default theme to custom-theme",
+        ));
+
+    let restored = std::fs::read_to_string(main_css).unwrap();
+    assert!(restored.contains(r#"font-family: "LXGW WenKai TC";"#));
+}
+
+#[test]
+fn theme_sync_prune_removes_extra_theme_files() {
+    let temp = TempDir::new().unwrap();
+    let project = temp.path().join("site");
+
+    Command::cargo_bin("blogx")
+        .unwrap()
+        .arg("init")
+        .arg(&project)
+        .assert()
+        .success();
+
+    let stale = project.join("theme/assets/css/old.css");
+    std::fs::write(&stale, "old").unwrap();
+
+    Command::cargo_bin("blogx")
+        .unwrap()
+        .current_dir(&project)
+        .args(["theme", "sync", "--prune"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("files pruned"));
+
+    assert!(!stale.exists());
+    assert!(project.join("theme/assets/css/main.css").exists());
+}
+
+#[test]
 fn robots_omits_sitemap_when_sitemap_generation_is_disabled() {
     let temp = TempDir::new().unwrap();
     let project = temp.path().join("site");

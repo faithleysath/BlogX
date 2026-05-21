@@ -5,7 +5,7 @@ use clap::{Args, Parser, Subcommand};
 
 use crate::build::{BuildOptions, build_site, clean_site};
 use crate::config::Config;
-use crate::init::init_project;
+use crate::init::{init_project, sync_default_theme};
 use crate::serve::{ServeOverrides, serve_site};
 
 #[derive(Debug, Parser)]
@@ -20,6 +20,7 @@ pub enum Command {
     Init(InitArgs),
     Build(BuildArgs),
     Serve(ServeArgs),
+    Theme(ThemeArgs),
     Clean(CleanArgs),
 }
 
@@ -51,6 +52,25 @@ pub struct ServeArgs {
 }
 
 #[derive(Debug, Args)]
+pub struct ThemeArgs {
+    #[command(subcommand)]
+    pub command: ThemeCommand,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum ThemeCommand {
+    Sync(ThemeSyncArgs),
+}
+
+#[derive(Debug, Args)]
+pub struct ThemeSyncArgs {
+    #[arg(long)]
+    pub dest: Option<PathBuf>,
+    #[arg(long)]
+    pub prune: bool,
+}
+
+#[derive(Debug, Args)]
 pub struct CleanArgs;
 
 pub fn run(cli: Cli) -> Result<()> {
@@ -76,6 +96,21 @@ pub fn run(cli: Cli) -> Result<()> {
             };
             serve_site(overrides, args.jobs)
         }
+        Command::Theme(args) => match args.command {
+            ThemeCommand::Sync(sync_args) => {
+                let config = Config::load_from_current_dir()?;
+                let dest = sync_args.dest.unwrap_or(config.paths.theme);
+                let stats = sync_default_theme(&dest, sync_args.prune)?;
+                println!(
+                    "synced default theme to {} ({} files copied, {} files pruned, {} directories pruned)",
+                    dest.display(),
+                    stats.files_copied,
+                    stats.files_pruned,
+                    stats.dirs_pruned
+                );
+                Ok(())
+            }
+        },
         Command::Clean(_) => {
             let config = Config::load_from_current_dir()?;
             clean_site(&config)
