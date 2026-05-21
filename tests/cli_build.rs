@@ -64,8 +64,13 @@ fn init_and_build_site() {
 
     let enhance =
         std::fs::read_to_string(project.join("public/assets/theme/js/enhance.js")).unwrap();
+    let main_css =
+        std::fs::read_to_string(project.join("public/assets/theme/css/main.css")).unwrap();
     assert!(enhance.contains("enableWheelHorizontalScroll(block);"));
+    assert!(enhance.contains("frame.append(button);"));
     assert!(enhance.contains("enableWheelHorizontalScroll(katexDisplay);"));
+    assert!(main_css.contains(".code-block"));
+    assert!(main_css.contains(".code-block pre"));
 }
 
 #[test]

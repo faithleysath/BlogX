@@ -46,6 +46,13 @@ document.addEventListener("DOMContentLoaded", () => {
   for (const code of document.querySelectorAll("pre > code")) {
     const block = code.parentElement;
     if (!block) continue;
+    let frame = block.parentElement;
+    if (!frame || !frame.classList.contains("code-block")) {
+      frame = document.createElement("div");
+      frame.className = "code-block";
+      block.before(frame);
+      frame.append(block);
+    }
     const button = document.createElement("button");
     button.type = "button";
     button.className = "copy-code";
@@ -63,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showToast("复制失败", "error");
       }
     });
-    block.prepend(button);
+    frame.append(button);
     enableWheelHorizontalScroll(block);
   }
 

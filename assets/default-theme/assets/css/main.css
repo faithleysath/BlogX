@@ -311,6 +311,15 @@
     display: none;
   }
 
+  .code-block {
+    position: relative;
+    margin: 1em 0;
+  }
+
+  .code-block pre {
+    margin: 0;
+  }
+
   pre,
   code {
     font-family:
@@ -359,6 +368,7 @@
     cursor: pointer;
     opacity: 0.3;
     transition: opacity 0.3s, transform 0.3s;
+    z-index: 1;
   }
 
   .copy-code::before {
