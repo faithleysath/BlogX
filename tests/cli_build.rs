@@ -46,6 +46,7 @@ fn init_and_build_site() {
             .join("public/assets/theme/js/copy-tex.min.js")
             .exists()
     );
+    assert!(project.join("public/assets/theme/js/enhance.js").exists());
 
     let sitemap = std::fs::read_to_string(project.join("public/sitemap.xml")).unwrap();
     assert!(sitemap.contains("<loc>/index.html</loc>"));
@@ -60,6 +61,11 @@ fn init_and_build_site() {
     assert!(html.contains(r#"<script src="/assets/theme/js/copy-tex.min.js" defer></script>"#));
     assert!(html.contains(r#"<nav class="site-nav" aria-label="Primary">"#));
     assert!(html.contains(r#"<aside class="sidebar" aria-label="Sidebar">"#));
+
+    let enhance =
+        std::fs::read_to_string(project.join("public/assets/theme/js/enhance.js")).unwrap();
+    assert!(enhance.contains("enableWheelHorizontalScroll(block);"));
+    assert!(enhance.contains("enableWheelHorizontalScroll(katexDisplay);"));
 }
 
 #[test]

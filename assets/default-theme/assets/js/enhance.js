@@ -1,4 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const enableWheelHorizontalScroll = element => {
+    element.addEventListener(
+      "wheel",
+      event => {
+        if (
+          element.scrollWidth > element.clientWidth &&
+          Math.abs(event.deltaY) > Math.abs(event.deltaX)
+        ) {
+          event.preventDefault();
+          element.scrollLeft += event.deltaY;
+        }
+      },
+      { passive: false },
+    );
+  };
+
   const showToast = (message, type = "success") => {
     let stack = document.querySelector(".toast-stack");
     if (!stack) {
@@ -48,6 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
     block.prepend(button);
+    enableWheelHorizontalScroll(block);
   }
 
   const images = Array.from(document.querySelectorAll("article img"));
@@ -117,15 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   for (const katexDisplay of document.querySelectorAll(".katex-display")) {
-    katexDisplay.addEventListener(
-      "wheel",
-      event => {
-        if (katexDisplay.scrollWidth > katexDisplay.clientWidth) {
-          event.preventDefault();
-          katexDisplay.scrollLeft += event.deltaY;
-        }
-      },
-      { passive: false },
-    );
+    enableWheelHorizontalScroll(katexDisplay);
   }
 });
