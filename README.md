@@ -229,13 +229,23 @@ Command: blogx build --profile --jobs 20
 | --- | ---: | ---: | ---: |
 | `--clean --no-cache` 冷构建 | 24 rendered | 9 copied | 54ms |
 
-合成 1000 页站点：
+合成 1000 页轻量站点：
 
 | 场景 | 结果 | 总耗时 |
 | --- | --- | ---: |
 | 冷构建 | 1001 rendered, 0 cached | 88ms |
 | 无变化热构建 | 0 rendered, 1001 cached | 18ms |
 | 改 2 篇、加 1 篇 | 3 rendered, 999 cached | 20ms |
+
+合成 1000 页重排版站点：
+
+这个用例每篇包含多段 inline/display KaTeX、表格、脚注、任务列表、嵌套列表、引用块和两个代码块，用来压 Markdown、KaTeX 和高亮路径。
+
+| 场景 | 结果 | 总耗时 | Markdown 累计 | KaTeX 累计 | 代码高亮累计 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 冷构建 | 1001 rendered, 0 cached | 194ms | 2174ms | 788ms | 50ms |
+| 无变化热构建 | 0 rendered, 1001 cached | 15ms | 0ms | 0ms | 0ms |
+| 改 2 篇、加 1 篇 | 3 rendered, 999 cached | 42ms | 35ms | 20ms | 8ms |
 
 复现方式：
 
