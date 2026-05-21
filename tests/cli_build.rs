@@ -71,6 +71,8 @@ fn init_and_build_site() {
     assert!(enhance.contains("enableWheelHorizontalScroll(katexDisplay);"));
     assert!(main_css.contains(".code-block"));
     assert!(main_css.contains(".code-block pre"));
+    assert!(main_css.contains("position: sticky"));
+    assert!(main_css.contains("left: 1rem"));
 }
 
 #[test]
