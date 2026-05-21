@@ -20,6 +20,12 @@ BlogX 是一个 Rust 编写的 HTML+CSS-first 静态站点编译器。它面向�
 
 ## 安装
 
+通过 npm 安装预编译二进制：
+
+```bash
+npm install -g @faithleysath/blogx
+```
+
 从源码安装当前仓库版本：
 
 ```bash
@@ -218,7 +224,7 @@ KaTeX 缓存位于：
 以下数字来自本机参考测试，不是跨机器承诺。测试环境：
 
 ```text
-BlogX: 0.4.6 release build
+BlogX: 0.4.7 release build
 CPU: Intel Core i5-14600KF, 20 threads
 Command: blogx build --profile --jobs 20
 ```

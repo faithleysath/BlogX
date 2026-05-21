@@ -68,6 +68,9 @@ Performance and distribution acceptance:
   macOS Intel, and macOS Apple Silicon artifacts. The Rust KaTeX binding uses
   its default QuickJS backend, so Windows and musl release targets are not part
   of the supported prebuilt matrix.
+- Run `(cd npm && npm pack --dry-run)` before tagging a release to confirm the
+  npm wrapper only includes the launcher, installer, and metadata needed to
+  fetch GitHub Release binaries.
 - After pushing a `v*` tag, confirm the GitHub release contains the four
   expected archives and that each archive contains the `blogx` binary for its
-  target.
+  target, then confirm `@faithleysath/blogx` was published to npm.

@@ -671,6 +671,7 @@ Primary distribution is a Rust binary.
 
 Supported paths:
 
+- `npm install -g @faithleysath/blogx`
 - `cargo install`
 - Prebuilt release binaries
 

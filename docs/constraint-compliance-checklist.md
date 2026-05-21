@@ -33,7 +33,7 @@ This checklist tracks the implementation target from
   highlighted code, then checks first full build, cached rebuild, and single-page
   rebuild profile output.
 - [x] Release artifact smoke checks the release workflow matrix, archive names,
-  packaging commands, and release upload configuration.
+  packaging commands, release upload configuration, and npm publish step.
 
 ## External Release Verification
 
@@ -41,5 +41,6 @@ This checklist tracks the implementation target from
   workflow-built archives: Linux x86_64 glibc, Linux aarch64 glibc, macOS
   x86_64, and macOS aarch64. The Rust KaTeX binding uses its default QuickJS
   backend, so Windows and musl release targets are intentionally excluded from
-  the supported prebuilt matrix. This depends on the external GitHub release run
-  and cannot be proven from a local working tree before a tag exists.
+  the supported prebuilt matrix. Also verify `@faithleysath/blogx` was published
+  to npm. This depends on the external GitHub release run and cannot be proven
+  from a local working tree before a tag exists.

@@ -23,5 +23,9 @@ grep -Fq 'tar -C dist -czf "dist-release/blogx-${{ matrix.target }}.tar.gz" blog
 grep -Fq 'actions/upload-artifact@v6' "$WORKFLOW"
 grep -Fq 'gh run download "$GITHUB_RUN_ID" --dir release-assets' "$WORKFLOW"
 grep -Fq 'gh release create "$GITHUB_REF_NAME" release-assets/*/blogx-* --title "$GITHUB_REF_NAME" --verify-tag' "$WORKFLOW"
+grep -Fq 'name: Publish npm' "$WORKFLOW"
+grep -Fq 'working-directory: npm' "$WORKFLOW"
+grep -Fq 'npm pack --dry-run' "$WORKFLOW"
+grep -Fq 'npm publish --access public --registry=https://registry.npmjs.org' "$WORKFLOW"
 
 echo "release artifact smoke passed"

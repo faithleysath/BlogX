@@ -1,6 +1,7 @@
 /target/
 /public/
 /.blogx/
+/npm/vendor/
 
 # Local build outputs created by generated BlogX projects.
 **/public/

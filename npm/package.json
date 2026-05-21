@@ -1,0 +1,30 @@
+{
+  "name": "@faithleysath/blogx",
+  "version": "0.4.7",
+  "description": "HTML+CSS-first static site compiler",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/faithleysath/BlogX.git",
+    "directory": "npm"
+  },
+  "homepage": "https://github.com/faithleysath/BlogX#readme",
+  "bugs": {
+    "url": "https://github.com/faithleysath/BlogX/issues"
+  },
+  "bin": {
+    "blogx": "bin/blogx.js"
+  },
+  "scripts": {
+    "postinstall": "node scripts/install.js",
+    "test": "node scripts/install.js --check"
+  },
+  "files": [
+    "bin/",
+    "scripts/",
+    "vendor/"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}
