@@ -224,7 +224,7 @@ KaTeX 缓存位于：
 以下数字来自本机参考测试，不是跨机器承诺。测试环境：
 
 ```text
-BlogX: 0.4.9 release build
+BlogX: 0.4.10 release build
 CPU: Intel Core i5-14600KF, 20 threads
 Command: blogx build --profile --jobs 20
 ```

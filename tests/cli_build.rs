@@ -2,6 +2,15 @@ use assert_cmd::Command;
 use predicates::prelude::*;
 use tempfile::TempDir;
 
+#[cfg(unix)]
+fn assert_same_file(left: impl AsRef<std::path::Path>, right: impl AsRef<std::path::Path>) {
+    use std::os::unix::fs::MetadataExt;
+
+    let left = std::fs::metadata(left).unwrap();
+    let right = std::fs::metadata(right).unwrap();
+    assert_eq!((left.dev(), left.ino()), (right.dev(), right.ino()));
+}
+
 fn build(project: &std::path::Path, args: &[&str]) -> assert_cmd::assert::Assert {
     let mut command = Command::cargo_bin("blogx").unwrap();
     command.current_dir(project).arg("build").args(args);
@@ -1154,15 +1163,16 @@ fn static_assets_cache_no_cache_and_deleted_cleanup_work() {
         .success();
 
     std::fs::create_dir_all(project.join("content/files")).unwrap();
-    std::fs::write(project.join("content/files/data.txt"), "v1").unwrap();
+    let source_asset = project.join("content/files/data.txt");
+    let output_asset = project.join("public/files/data.txt");
+    std::fs::write(&source_asset, "v1").unwrap();
 
     build(&project, &["--profile"])
         .success()
         .stdout(predicate::str::contains("assets copied: 1"));
-    assert_eq!(
-        std::fs::read_to_string(project.join("public/files/data.txt")).unwrap(),
-        "v1"
-    );
+    assert_eq!(std::fs::read_to_string(&output_asset).unwrap(), "v1");
+    #[cfg(unix)]
+    assert_same_file(&source_asset, &output_asset);
 
     build(&project, &["--profile"])
         .success()
@@ -1170,14 +1180,17 @@ fn static_assets_cache_no_cache_and_deleted_cleanup_work() {
 
     build(&project, &["--profile", "--no-cache"])
         .success()
-        .stdout(predicate::str::contains("assets copied: 1"))
+        .stdout(predicate::str::contains("assets copied: 0"))
+        .stdout(predicate::str::contains("assets unchanged: 1"))
         .stdout(predicate::str::contains(
             "cache mode: disabled by --no-cache",
         ));
+    #[cfg(unix)]
+    assert_same_file(&source_asset, &output_asset);
 
-    std::fs::remove_file(project.join("content/files/data.txt")).unwrap();
+    std::fs::remove_file(source_asset).unwrap();
     build(&project, &["--profile"]).success();
-    assert!(!project.join("public/files/data.txt").exists());
+    assert!(!output_asset.exists());
 }
 
 #[test]

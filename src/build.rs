@@ -1,6 +1,7 @@
 use std::{
     collections::{BTreeMap, HashMap, HashSet},
     fs,
+    io::ErrorKind,
     path::{Path, PathBuf},
     time::Instant,
 };
@@ -38,6 +39,7 @@ struct BuildStats {
     pages_cached: usize,
     assets_copied: usize,
     assets_cached: usize,
+    assets_unchanged: usize,
     theme_assets_copied: usize,
     partials_rendered: usize,
     warnings: usize,
@@ -254,24 +256,17 @@ pub fn build_site(config: &Config, options: BuildOptions) -> Result<()> {
     let content_asset_start = Instant::now();
     let mut assets_copied = 0;
     let mut assets_cached = 0;
+    let mut assets_unchanged = 0;
     for asset in &discovered.assets {
         let target = config.paths.output.join(&asset.relative_path);
         if asset_cache_hit(config, &old_cache, asset, options.no_cache) {
             assets_cached += 1;
             continue;
         }
-        if let Some(parent) = target.parent() {
-            fs::create_dir_all(parent)
-                .with_context(|| format!("failed to create {}", parent.display()))?;
+        match sync_content_asset(asset, &target)? {
+            AssetSync::Written => assets_copied += 1,
+            AssetSync::Unchanged => assets_unchanged += 1,
         }
-        fs::copy(&asset.source_path, &target).with_context(|| {
-            format!(
-                "failed to copy {} to {}",
-                asset.source_path.display(),
-                target.display()
-            )
-        })?;
-        assets_copied += 1;
     }
     let content_asset_ms = content_asset_start.elapsed().as_millis();
 
@@ -298,6 +293,7 @@ pub fn build_site(config: &Config, options: BuildOptions) -> Result<()> {
         pages_cached,
         assets_copied,
         assets_cached,
+        assets_unchanged,
         theme_assets_copied,
         partials_rendered: partials.len(),
         warnings: partial_diagnostics.warnings
@@ -366,6 +362,11 @@ struct RenderPageDeps<'a> {
 struct PageCacheUpdate {
     diagnostics: Vec<Diagnostic>,
     partials_used: Vec<String>,
+}
+
+enum AssetSync {
+    Written,
+    Unchanged,
 }
 
 fn validate_paths(config: &Config) -> Result<()> {
@@ -813,6 +814,79 @@ fn asset_cache_hit(
     entry.input_hash == asset.input_hash && config.paths.output.join(&asset.relative_path).exists()
 }
 
+fn sync_content_asset(asset: &SourceAsset, target: &Path) -> Result<AssetSync> {
+    if content_asset_target_is_current(asset, target)? {
+        return Ok(AssetSync::Unchanged);
+    }
+
+    if let Some(parent) = target.parent() {
+        fs::create_dir_all(parent)
+            .with_context(|| format!("failed to create {}", parent.display()))?;
+    }
+
+    if target.exists() {
+        fs::remove_file(target)
+            .with_context(|| format!("failed to replace content asset {}", target.display()))?;
+    }
+
+    match fs::hard_link(&asset.source_path, target) {
+        Ok(()) => Ok(AssetSync::Written),
+        Err(err) => {
+            if target.exists() {
+                fs::remove_file(target).with_context(|| {
+                    format!(
+                        "failed to clean up partial content asset {}",
+                        target.display()
+                    )
+                })?;
+            }
+            fs::copy(&asset.source_path, target).with_context(|| {
+                format!(
+                    "failed to hard-link or copy {} to {}: hard link failed with {err}",
+                    asset.source_path.display(),
+                    target.display()
+                )
+            })?;
+            Ok(AssetSync::Written)
+        }
+    }
+}
+
+fn content_asset_target_is_current(asset: &SourceAsset, target: &Path) -> Result<bool> {
+    let source_metadata = fs::metadata(&asset.source_path)
+        .with_context(|| format!("failed to inspect {}", asset.source_path.display()))?;
+    let target_metadata = match fs::metadata(target) {
+        Ok(metadata) => metadata,
+        Err(err) if err.kind() == ErrorKind::NotFound => return Ok(false),
+        Err(err) => {
+            return Err(err)
+                .with_context(|| format!("failed to inspect content asset {}", target.display()));
+        }
+    };
+
+    if source_metadata.len() != target_metadata.len() {
+        return Ok(false);
+    }
+
+    if same_file(&source_metadata, &target_metadata) {
+        return Ok(true);
+    }
+
+    Ok(hash_file(target)? == asset.input_hash)
+}
+
+#[cfg(unix)]
+fn same_file(left: &fs::Metadata, right: &fs::Metadata) -> bool {
+    use std::os::unix::fs::MetadataExt;
+
+    left.dev() == right.dev() && left.ino() == right.ino()
+}
+
+#[cfg(not(unix))]
+fn same_file(_left: &fs::Metadata, _right: &fs::Metadata) -> bool {
+    false
+}
+
 fn cleanup_orphans(
     config: &Config,
     old_cache: &CacheManifest,
@@ -943,6 +1017,7 @@ fn print_summary(stats: &BuildStats, infra_count: usize, options: BuildOptions) 
         println!("  partials rendered: {}", stats.partials_rendered);
         println!("  assets copied: {}", stats.assets_copied);
         println!("  assets cached: {}", stats.assets_cached);
+        println!("  assets unchanged: {}", stats.assets_unchanged);
         println!("  theme assets copied: {}", stats.theme_assets_copied);
         println!("  setup: {}ms", stats.profile.setup_ms);
         println!("  source scan: {}ms", stats.profile.scan_ms);
